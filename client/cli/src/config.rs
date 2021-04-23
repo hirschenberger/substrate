@@ -27,6 +27,7 @@ use crate::{
 use log::{warn, info};
 use names::{Generator, Name};
 use sc_client_api::execution_extensions::ExecutionStrategies;
+use sc_client_db::{Backend, DatabaseType};
 use sc_service::config::{
 	BasePath, Configuration, DatabaseConfig, ExtTransport, KeystoreConfig, NetworkConfiguration,
 	NodeKeyConfig, OffchainWorkerConfig, PrometheusConfig, PruningMode, Role, RpcMethods,
@@ -253,7 +254,16 @@ pub trait CliConfiguration<DCV: DefaultConfigurationValues = ()>: Sized {
 			// of it, so we assume the database is not-migrated yet.
 			if basedir.exists() &&
 				!(basedir.join("light").exists() || basedir.join("full").exists()) {
-				migrate_to_role_subdir(&basedir, role_suffix)?
+
+				match (role, Backend::database_type(db_conf)) {
+					(Role::Light, Ok(DatabaseType::Light)) |
+					(Role::Full, Ok(DatabaseType::Full)) |
+					(Role::Authority, Ok(DatabaseType::Full)) =>
+						migrate_to_role_subdir(&basedir, role_suffix)?,
+					_ => return Err(sp_blockchain::Error::Backend(
+							"Client role does not match database type".to_owned()
+						).into()),
+				}
 			}
 		}
 
