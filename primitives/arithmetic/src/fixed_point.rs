@@ -609,8 +609,8 @@ macro_rules! implement_fixed {
 			}
 		}
 
-		// Manual impl `Serialize` as serde_json does not support i128.
-		// TODO: remove impl if issue https://github.com/serde-rs/json/issues/548 fixed.
+		// Manually impl `Serialize` as serde_json's i128 support is buggy.
+		// https://github.com/serde-rs/json/issues/505 fixed.
 		#[cfg(feature = "std")]
 		impl Serialize for $name {
 			fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -621,8 +621,8 @@ macro_rules! implement_fixed {
 			}
 		}
 
-		// Manual impl `Deserialize` as serde_json does not support i128.
-		// TODO: remove impl if issue https://github.com/serde-rs/json/issues/548 fixed.
+		// Manually impl `Deserialize` as serde_json's i128 support is buggy.
+		// https://github.com/serde-rs/json/issues/505 fixed.
 		#[cfg(feature = "std")]
 		impl<'de> Deserialize<'de> for $name {
 			fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
