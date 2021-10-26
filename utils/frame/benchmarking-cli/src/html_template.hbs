@@ -19,6 +19,44 @@
 
 		<div class="container-fluid">
 			<div class="row">
+				<div class="col-4">
+					<dl class="row">
+						<dt class="col-sm-3">Date:</dt>
+						<dd class="col-sm-9">{{date}}</dd>
+						<dt class="col-sm-3">Version:</dt>
+						<dd class="col-sm-9">{{version}}</dd>
+						<dt class="col-sm-3">Chain:</dt>
+						<dd class="col-sm-9">{{cmd.chain}}</dd>
+						<dt class="col-sm-3">Pallet:</dt>
+						<dd class="col-sm-9">{{pallet}}</dd>
+						<dt class="col-sm-3">Instance:</dt>
+						<dd class="col-sm-9">{{instance}}</dd>
+					</dl>
+				</div>
+				<div class="col-4">
+					<dl class="row">
+						<dt class="col-sm-4">Steps:</dt>
+						<dd class="col-sm-8">{{cmd.steps}}</dd>
+						<dt class="col-sm-4">Repeat:</dt>
+						<dd class="col-sm-8">{{cmd.repeat}}</dd>
+						<dt class="col-sm-4">Execution:</dt>
+						<dd class="col-sm-8">{{cmd.execution}}</dd>
+						<dt class="col-sm-4">Wasm-Execution:</dt>
+						<dd class="col-sm-8">{{cmd.wasm_execution}}</dd>
+						<dt class="col-sm-4">DB-Cache:</dt>
+						<dd class="col-sm-8">{{cmd.db_cache}}</dd>
+					</dl>
+				</div>
+				<div class="col-4">
+					<dl class="row">
+						<dt class="col-sm-4">Low-Range:</dt>
+						<dd class="col-sm-8">{{cmd.lowest_range_values}}</dd>
+						<dt class="col-sm-4">High-Range:</dt>
+						<dd class="col-sm-8">{{cmd.highest_range_values}}</dd>
+					</dl>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-2">
 					<div id="menu" class="list-group">
 						{{#each benchmarks as |benchmark|}}
