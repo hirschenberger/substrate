@@ -17,9 +17,12 @@
 
 mod command;
 mod writer;
+mod html_writer;
+mod utils;
 
 use sc_cli::{ExecutionStrategy, WasmExecutionMethod};
 use std::fmt::Debug;
+use std::path::PathBuf;
 
 // Add a more relaxed parsing for pallet names by allowing pallet directory names with `-` to be
 // used like crate names with `_`
@@ -74,15 +77,19 @@ pub struct BenchmarkCmd {
 
 	/// Output the benchmarks to a Rust file at the given path.
 	#[structopt(long)]
-	pub output: Option<std::path::PathBuf>,
+	pub output: Option<PathBuf>,
 
 	/// Add a header file to your outputted benchmarks
 	#[structopt(long)]
-	pub header: Option<std::path::PathBuf>,
+	pub header: Option<PathBuf>,
 
 	/// Path to Handlebars template file used for outputting benchmark results. (Optional)
 	#[structopt(long)]
-	pub template: Option<std::path::PathBuf>,
+	pub template: Option<PathBuf>,
+
+	/// Output a html page with details, a summary and charts of the benchmark results. (Optional)
+	#[structopt(long)]
+	pub html_output: Option<PathBuf>,
 
 	/// Which analysis function to use when outputting benchmarks:
 	/// * min-squares (default)

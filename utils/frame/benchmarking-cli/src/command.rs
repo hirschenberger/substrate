@@ -15,12 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::BenchmarkCmd;
+use crate::{utils, BenchmarkCmd};
 use codec::{Decode, Encode};
-use frame_benchmarking::{
-	Analysis, BenchmarkBatch, BenchmarkBatchSplitResults, BenchmarkList, BenchmarkParameter,
-	BenchmarkResult, BenchmarkSelector,
-};
+use frame_benchmarking::{Analysis, AnalysisChoice, BenchmarkBatch, BenchmarkBatchSplitResults, BenchmarkList, BenchmarkParameter, BenchmarkResult, BenchmarkSelector};
 use frame_support::traits::StorageInfo;
 use linked_hash_map::LinkedHashMap;
 use sc_cli::{CliConfiguration, ExecutionStrategy, Result, SharedParams};
@@ -35,7 +32,7 @@ use sp_externalities::Extensions;
 use sp_keystore::{testing::KeyStore, KeystoreExt, SyncCryptoStorePtr};
 use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
 use sp_state_machine::StateMachine;
-use std::{fmt::Debug, sync::Arc, time};
+use std::{convert::TryInto, fmt::Debug, io, sync::Arc, time};
 
 // This takes multiple benchmark batches and combines all the results where the pallet, instance,
 // and benchmark are the same.
@@ -88,6 +85,11 @@ fn combine_batches(
 }
 
 impl BenchmarkCmd {
+    /// Which analysis function should be used when outputting benchmarks
+	pub fn analysis_choice(&self) -> io::Result<AnalysisChoice> {
+		Ok(self.output_analysis.clone().try_into().map_err(|e| utils::io_error(e))?)
+	}
+
 	/// Runs the command and benchmarks the chain.
 	pub fn run<BB, ExecDispatch>(&self, config: Configuration) -> Result<()>
 	where
@@ -99,6 +101,12 @@ impl BenchmarkCmd {
 		if let Some(output_path) = &self.output {
 			if !output_path.is_dir() && output_path.file_name().is_none() {
 				return Err("Output file or path is invalid!".into())
+			}
+		}
+
+		if let Some(html_output_path) = &self.html_output {
+			if !html_output_path.is_dir() && html_output_path.file_name().is_none() {
+				return Err("HTML output file or path is invalid!".into())
 			}
 		}
 
@@ -362,6 +370,10 @@ impl BenchmarkCmd {
 			crate::writer::write_results(&batches, &storage_info, output_path, self)?;
 		}
 
+		if let Some(html_output_path) = &self.html_output {
+			crate::html_writer::write_results(&batches, &storage_info, html_output_path, self)?;
+		}
+
 		for batch in batches.into_iter() {
 			// Print benchmark metadata
 			println!(
@@ -409,7 +421,7 @@ impl BenchmarkCmd {
 
 			if !self.no_storage_info {
 				let mut comments: Vec<String> = Default::default();
-				crate::writer::add_storage_comments(
+				crate::utils::add_storage_comments(
 					&mut comments,
 					&batch.db_results,
 					&storage_info,
