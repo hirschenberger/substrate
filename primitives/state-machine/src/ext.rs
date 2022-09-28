@@ -180,7 +180,7 @@ where
 		self.overlay.set_offchain_storage(key, value)
 	}
 
-	fn storage(&self, key: &[u8]) -> Option<StorageValue> {
+	fn storage(&mut self, key: &[u8]) -> Option<StorageValue> {
 		let _guard = guard();
 		let result = self
 			.overlay
@@ -206,7 +206,7 @@ where
 		result
 	}
 
-	fn storage_hash(&self, key: &[u8]) -> Option<Vec<u8>> {
+	fn storage_hash(&mut self, key: &[u8]) -> Option<Vec<u8>> {
 		let _guard = guard();
 		let result = self
 			.overlay
@@ -224,7 +224,7 @@ where
 		result.map(|r| r.encode())
 	}
 
-	fn child_storage(&self, child_info: &ChildInfo, key: &[u8]) -> Option<StorageValue> {
+	fn child_storage(&mut self, child_info: &ChildInfo, key: &[u8]) -> Option<StorageValue> {
 		let _guard = guard();
 		let result = self
 			.overlay
@@ -246,7 +246,7 @@ where
 		result
 	}
 
-	fn child_storage_hash(&self, child_info: &ChildInfo, key: &[u8]) -> Option<Vec<u8>> {
+	fn child_storage_hash(&mut self, child_info: &ChildInfo, key: &[u8]) -> Option<Vec<u8>> {
 		let _guard = guard();
 		let result = self
 			.overlay
@@ -268,7 +268,7 @@ where
 		result.map(|r| r.encode())
 	}
 
-	fn exists_storage(&self, key: &[u8]) -> bool {
+	fn exists_storage(&mut self, key: &[u8]) -> bool {
 		let _guard = guard();
 		let result = match self.overlay.storage(key) {
 			Some(x) => x.is_some(),
@@ -286,7 +286,7 @@ where
 		result
 	}
 
-	fn exists_child_storage(&self, child_info: &ChildInfo, key: &[u8]) -> bool {
+	fn exists_child_storage(&mut self, child_info: &ChildInfo, key: &[u8]) -> bool {
 		let _guard = guard();
 
 		let result = match self.overlay.child_storage(child_info, key) {
@@ -308,7 +308,7 @@ where
 		result
 	}
 
-	fn next_storage_key(&self, key: &[u8]) -> Option<StorageKey> {
+	fn next_storage_key(&mut self, key: &[u8]) -> Option<StorageKey> {
 		let mut next_backend_key =
 			self.backend.next_storage_key(key).expect(EXT_NOT_ALLOWED_TO_FAIL);
 		let mut overlay_changes = self.overlay.iter_after(key).peekable();
@@ -321,11 +321,11 @@ where
 
 					// If `backend_key` is less than the `overlay_key`, we found out next key.
 					if cmp == Some(Ordering::Less) {
-						return next_backend_key
+						return next_backend_key;
 					} else if overlay_key.1.value().is_some() {
 						// If there exists a value for the `overlay_key` in the overlay
 						// (aka the key is still valid), it means we have found our next key.
-						return Some(overlay_key.0.to_vec())
+						return Some(overlay_key.0.to_vec());
 					} else if cmp == Some(Ordering::Equal) {
 						// If the `backend_key` and `overlay_key` are equal, it means that we need
 						// to search for the next backend key, because the overlay has overwritten
@@ -346,7 +346,7 @@ where
 		}
 	}
 
-	fn next_child_storage_key(&self, child_info: &ChildInfo, key: &[u8]) -> Option<StorageKey> {
+	fn next_child_storage_key(&mut self, child_info: &ChildInfo, key: &[u8]) -> Option<StorageKey> {
 		let mut next_backend_key = self
 			.backend
 			.next_child_storage_key(child_info, key)
@@ -362,11 +362,11 @@ where
 
 					// If `backend_key` is less than the `overlay_key`, we found out next key.
 					if cmp == Some(Ordering::Less) {
-						return next_backend_key
+						return next_backend_key;
 					} else if overlay_key.1.value().is_some() {
 						// If there exists a value for the `overlay_key` in the overlay
 						// (aka the key is still valid), it means we have found our next key.
-						return Some(overlay_key.0.to_vec())
+						return Some(overlay_key.0.to_vec());
 					} else if cmp == Some(Ordering::Equal) {
 						// If the `backend_key` and `overlay_key` are equal, it means that we need
 						// to search for the next backend key, because the overlay has overwritten
@@ -391,7 +391,7 @@ where
 		let _guard = guard();
 		if is_child_storage_key(&key) {
 			warn!(target: "trie", "Refuse to directly set child storage key");
-			return
+			return;
 		}
 
 		// NOTE: be careful about touching the key names – used outside substrate!
@@ -472,7 +472,7 @@ where
 				target: "trie",
 				"Refuse to directly clear prefix that is part or contains of child storage key",
 			);
-			return MultiRemovalResults { maybe_cursor: None, backend: 0, unique: 0, loops: 0 }
+			return MultiRemovalResults { maybe_cursor: None, backend: 0, unique: 0, loops: 0 };
 		}
 
 		self.mark_dirty();
@@ -538,7 +538,7 @@ where
 				storage_root = %HexDisplay::from(&root.as_ref()),
 				cached = true,
 			);
-			return root.encode()
+			return root.encode();
 		}
 
 		let root =
@@ -716,7 +716,7 @@ where
 			.expect("We have reset the overlay above, so we can not be in the runtime; qed");
 	}
 
-	fn read_write_count(&self) -> (u32, u32, u32, u32) {
+	fn read_write_count(&mut self) -> (u32, u32, u32, u32) {
 		self.backend.read_write_count()
 	}
 
@@ -724,7 +724,7 @@ where
 		self.backend.reset_read_write_count()
 	}
 
-	fn get_whitelist(&self) -> Vec<TrackedStorageKey> {
+	fn get_whitelist(&mut self) -> Vec<TrackedStorageKey> {
 		self.backend.get_whitelist()
 	}
 
@@ -732,11 +732,11 @@ where
 		self.backend.set_whitelist(new)
 	}
 
-	fn proof_size(&self) -> Option<u32> {
+	fn proof_size(&mut self) -> Option<u32> {
 		self.backend.proof_size()
 	}
 
-	fn get_read_and_written_keys(&self) -> Vec<(Vec<u8>, u32, u32, bool)> {
+	fn get_read_and_written_keys(&mut self) -> Vec<(Vec<u8>, u32, u32, bool)> {
 		self.backend.get_read_and_written_keys()
 	}
 }
@@ -761,7 +761,7 @@ where
 			.apply_to_keys_while(maybe_child, maybe_prefix, maybe_cursor, |key| {
 				if maybe_limit.map_or(false, |limit| loop_count == limit) {
 					maybe_next_key = Some(key.to_vec());
-					return false
+					return false;
 				}
 				let overlay = match maybe_child {
 					Some(child_info) => self.overlay.child_storage(child_info, key),

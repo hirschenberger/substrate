@@ -47,6 +47,9 @@ pub trait AsLocalTrieCache<H: Hasher>: sealed::Sealed {
 	/// Returns `self` as [`LocalTrieCache`].
 	#[cfg(feature = "std")]
 	fn as_local_trie_cache(&self) -> &LocalTrieCache<H>;
+
+	#[cfg(feature = "std")]
+	fn as_local_trie_cache_mut(&mut self) -> &mut LocalTrieCache<H>;
 }
 
 impl<H: Hasher> AsLocalTrieCache<H> for LocalTrieCache<H> {
@@ -54,11 +57,19 @@ impl<H: Hasher> AsLocalTrieCache<H> for LocalTrieCache<H> {
 	fn as_local_trie_cache(&self) -> &LocalTrieCache<H> {
 		self
 	}
+
+	fn as_local_trie_cache_mut(&mut self) -> &mut LocalTrieCache<H> {
+		self
+	}
 }
 
 #[cfg(feature = "std")]
-impl<H: Hasher> AsLocalTrieCache<H> for &LocalTrieCache<H> {
+impl<H: Hasher> AsLocalTrieCache<H> for &mut LocalTrieCache<H> {
 	fn as_local_trie_cache(&self) -> &LocalTrieCache<H> {
+		self
+	}
+
+	fn as_local_trie_cache_mut(&mut self) -> &mut LocalTrieCache<H> {
 		self
 	}
 }
@@ -72,6 +83,7 @@ mod sealed {
 	pub trait Sealed {}
 
 	impl<H: Hasher> Sealed for LocalTrieCache<H> {}
+	impl<H: Hasher> Sealed for &mut LocalTrieCache<H> {}
 	impl<H: Hasher> Sealed for &LocalTrieCache<H> {}
 }
 
@@ -113,14 +125,17 @@ where
 	/// backend.
 	///
 	/// The backend storage and the cache will be taken from `other`.
-	pub fn wrap(other: &TrieBackend<S, H, C>) -> TrieBackendBuilder<&S, H, &C> {
+	pub fn wrap(other: &mut TrieBackend<S, H, C>) -> TrieBackendBuilder<&S, H, &mut C> {
+		let cache = other.essence.trie_node_cache.as_mut();
+		let root = other.essence.root();
+		let storage = other.essence.backend_storage_mut();
 		TrieBackendBuilder {
-			storage: other.essence.backend_storage(),
-			root: *other.essence.root(),
+			storage,
+			root,
 			#[cfg(feature = "std")]
 			recorder: None,
 			#[cfg(feature = "std")]
-			cache: other.essence.trie_node_cache.as_ref(),
+			cache,
 			#[cfg(not(feature = "std"))]
 			cache: None,
 		}
@@ -359,6 +374,10 @@ impl<S: TrieBackendStorage<H>, H: Hasher, C> AsTrieBackend<H, C> for TrieBackend
 	type TrieBackendStorage = S;
 
 	fn as_trie_backend(&self) -> &TrieBackend<S, H, C> {
+		self
+	}
+
+	fn as_trie_backend_mut(&mut self) -> &mut TrieBackend<S, H, C> {
 		self
 	}
 }
@@ -619,8 +638,8 @@ pub mod tests {
 			.storage_root(iter::once((&b"new-key"[..], Some(&b"new-value"[..]))), state_version);
 		assert!(!tx.drain().is_empty());
 		assert!(
-			new_root !=
-				test_trie(state_version, None, None)
+			new_root
+				!= test_trie(state_version, None, None)
 					.storage_root(iter::empty(), state_version)
 					.0
 		);
