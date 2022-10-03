@@ -3730,7 +3730,7 @@ dependencies = [
  "libp2p-core",
  "libp2p-swarm",
  "log",
- "lru",
+ "lru 0.7.8",
  "prost 0.10.3",
  "prost-build 0.10.4",
  "prost-codec",
@@ -4229,11 +4229,20 @@ dependencies = [
 
 [[package]]
 name = "lru"
-version = "0.7.5"
+version = "0.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32613e41de4c47ab04970c348ca7ae7382cf116625755af070b008a15516a889"
+checksum = "e999beba7b6e8345721bd280141ed958096a2e4abdf74f67ff4ce49b4b54e47a"
 dependencies = [
- "hashbrown 0.11.2",
+ "hashbrown 0.12.3",
+]
+
+[[package]]
+name = "lru"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6e8aaa3f231bb4bd57b84b2d5dc3ae7f350265df8aa96492e0bc394a1571909"
+dependencies = [
+ "hashbrown 0.12.3",
 ]
 
 [[package]]
@@ -8269,7 +8278,7 @@ dependencies = [
  "criterion",
  "env_logger",
  "lazy_static",
- "lru",
+ "lru 0.8.1",
  "num_cpus",
  "parity-scale-codec",
  "parking_lot 0.12.1",
@@ -8482,7 +8491,7 @@ dependencies = [
  "linked-hash-map",
  "linked_hash_set",
  "log",
- "lru",
+ "lru 0.8.1",
  "parity-scale-codec",
  "parking_lot 0.12.1",
  "pin-project",
@@ -8576,7 +8585,7 @@ dependencies = [
  "futures-timer",
  "libp2p",
  "log",
- "lru",
+ "lru 0.8.1",
  "quickcheck",
  "sc-network-common",
  "sc-peerset",
@@ -8615,7 +8624,7 @@ dependencies = [
  "futures",
  "libp2p",
  "log",
- "lru",
+ "lru 0.8.1",
  "parity-scale-codec",
  "prost 0.10.3",
  "prost-build 0.10.4",
@@ -9695,7 +9704,7 @@ version = "4.0.0-dev"
 dependencies = [
  "futures",
  "log",
- "lru",
+ "lru 0.8.1",
  "parity-scale-codec",
  "parking_lot 0.12.1",
  "sp-api",
@@ -10335,7 +10344,7 @@ dependencies = [
  "hash-db",
  "hashbrown 0.12.3",
  "lazy_static",
- "lru",
+ "lru 0.8.1",
  "memory-db",
  "nohash-hasher",
  "parity-scale-codec",
