@@ -2125,7 +2125,7 @@ dependencies = [
  "linregress",
  "log",
  "parity-scale-codec",
- "paste 1.0.6",
+ "paste 1.0.10",
  "rusty-fork",
  "scale-info",
  "serde",
@@ -2289,7 +2289,7 @@ dependencies = [
  "once_cell",
  "parity-scale-codec",
  "parity-util-mem",
- "paste 1.0.6",
+ "paste 1.0.10",
  "pretty_assertions",
  "scale-info",
  "serde",
@@ -4577,7 +4577,7 @@ checksum = "25af9cf0dc55498b7bd94a1508af7a78706aa0ab715a73c5169273e03c84845e"
 dependencies = [
  "anyhow",
  "byteorder",
- "paste 1.0.6",
+ "paste 1.0.10",
  "thiserror",
 ]
 
@@ -6738,9 +6738,9 @@ dependencies = [
 
 [[package]]
 name = "paste"
-version = "1.0.6"
+version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0744126afe1a6dd7f394cb50a716dbe086cb06e255e53d8d0185d82828358fb5"
+checksum = "cf1c2c742266c2f1041c914ba65355a83ae8747b05f208319784083583494b4b"
 
 [[package]]
 name = "paste-impl"
@@ -8273,7 +8273,7 @@ dependencies = [
  "num_cpus",
  "parity-scale-codec",
  "parking_lot 0.12.1",
- "paste 1.0.6",
+ "paste 1.0.10",
  "regex",
  "sc-executor-common",
  "sc-executor-wasmi",
@@ -8342,7 +8342,7 @@ dependencies = [
  "once_cell",
  "parity-scale-codec",
  "parity-wasm 0.45.0",
- "paste 1.0.6",
+ "paste 1.0.10",
  "rustix",
  "sc-allocator",
  "sc-executor-common",
@@ -8833,7 +8833,7 @@ dependencies = [
 name = "sc-runtime-test"
 version = "2.0.0"
 dependencies = [
- "paste 1.0.6",
+ "paste 1.0.10",
  "sp-core",
  "sp-io",
  "sp-runtime",
@@ -9483,7 +9483,7 @@ dependencies = [
  "approx",
  "num-complex",
  "num-traits",
- "paste 1.0.6",
+ "paste 1.0.10",
 ]
 
 [[package]]
@@ -10072,7 +10072,7 @@ dependencies = [
  "log",
  "parity-scale-codec",
  "parity-util-mem",
- "paste 1.0.6",
+ "paste 1.0.10",
  "rand 0.7.3",
  "scale-info",
  "serde",
@@ -11931,7 +11931,7 @@ dependencies = [
  "log",
  "object 0.29.0",
  "once_cell",
- "paste 1.0.6",
+ "paste 1.0.10",
  "psm",
  "rayon",
  "serde",
@@ -12065,7 +12065,7 @@ dependencies = [
  "mach",
  "memfd",
  "memoffset",
- "paste 1.0.6",
+ "paste 1.0.10",
  "rand 0.8.5",
  "rustix",
  "thiserror",
